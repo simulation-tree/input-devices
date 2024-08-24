@@ -12,10 +12,13 @@ namespace InputDevices
         World IEntity.World => (Entity)device;
         eint IEntity.Value => (Entity)device;
 
+#if NET
+        [Obsolete("Default constructor not available", true)]
         public Keyboard()
         {
             throw new InvalidOperationException("Cannot create a keyboard without a world.");
         }
+#endif
 
         public Keyboard(World world, eint existingEntity)
         {

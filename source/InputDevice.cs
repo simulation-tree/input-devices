@@ -12,6 +12,14 @@ namespace InputDevices
         World IEntity.World => entity;
         eint IEntity.Value => entity;
 
+#if NET
+        [Obsolete("Default constructor not available", true)]
+        public InputDevice()
+        {
+            throw new InvalidOperationException("Cannot create an input device without a world.");
+        }
+#endif
+
         public InputDevice(World world, eint existingEntity)
         {
             entity = new(world, existingEntity);

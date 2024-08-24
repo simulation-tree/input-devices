@@ -41,10 +41,13 @@ namespace InputDevices
         World IEntity.World => (Entity)device;
         eint IEntity.Value => (Entity)device;
 
+#if NET
+        [Obsolete("Default constructor not available", true)]
         public Mouse()
         {
             throw new InvalidOperationException("Cannot create a mouse without a world.");
         }
+#endif
 
         public Mouse(World world, eint existingEntity)
         {

@@ -67,36 +67,6 @@ namespace InputDevices
             return new Query(world, RuntimeType.Get<IsMouse>());
         }
 
-        public readonly void SetPosition(Vector2 position, TimeSpan timestamp)
-        {
-            ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
-            state.Position = position;
-
-            device.SetUpdateTime(timestamp);
-        }
-
-        public readonly void AddScroll(Vector2 scroll, TimeSpan timestamp)
-        {
-            ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
-            state.Scroll = scroll;
-
-            device.SetUpdateTime(timestamp);
-        }
-
-        public readonly bool IsButtonDown(uint control)
-        {
-            ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
-            return state.state[control];
-        }
-
-        public readonly void SetButtonDown(uint control, bool pressed, TimeSpan timestamp)
-        {
-            ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
-            state.state[control] = pressed;
-
-            device.SetUpdateTime(timestamp);
-        }
-
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
             Entity entity = device;

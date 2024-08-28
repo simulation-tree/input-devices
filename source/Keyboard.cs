@@ -38,26 +38,6 @@ namespace InputDevices
             return new Query(world, RuntimeType.Get<IsKeyboard>());
         }
 
-        public readonly KeyboardState GetState()
-        {
-            ref IsKeyboard state = ref ((Entity)device).GetComponent<IsKeyboard>();
-            return state.state;
-        }
-
-        public readonly KeyboardState GetLastState()
-        {
-            ref LastKeyboardState lastState = ref ((Entity)device).GetComponent<LastKeyboardState>();
-            return lastState.value;
-        }
-
-        public readonly void SetKeyDown(uint control, bool pressed, TimeSpan timestamp)
-        {
-            ref IsKeyboard state = ref ((Entity)device).GetComponent<IsKeyboard>();
-            state.state.SetKeyDown(control, pressed);
-
-            device.SetUpdateTime(timestamp);
-        }
-
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
             Entity entity = device;

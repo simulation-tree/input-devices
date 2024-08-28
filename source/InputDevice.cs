@@ -5,7 +5,7 @@ using Unmanaged;
 
 namespace InputDevices
 {
-    public readonly struct InputDevice : IEntity, IDisposable
+    public readonly struct InputDevice : IEntity
     {
         private readonly Entity entity;
 
@@ -29,11 +29,6 @@ namespace InputDevices
         {
             entity = new(world);
             entity.AddComponent(new LastDeviceUpdateTime());
-        }
-
-        public readonly void Dispose()
-        {
-            entity.Dispose();
         }
 
         Query IEntity.GetQuery(World world)

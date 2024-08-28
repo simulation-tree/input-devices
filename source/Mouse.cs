@@ -6,7 +6,7 @@ using Unmanaged;
 
 namespace InputDevices
 {
-    public readonly struct Mouse : IMouse, IDisposable
+    public readonly struct Mouse : IMouse
     {
         private readonly InputDevice device;
 
@@ -60,11 +60,6 @@ namespace InputDevices
             Entity entity = device;
             entity.AddComponent(new IsMouse());
             entity.AddComponent(new LastMouseState());
-        }
-
-        public readonly void Dispose()
-        {
-            device.Dispose();
         }
 
         Query IEntity.GetQuery(World world)

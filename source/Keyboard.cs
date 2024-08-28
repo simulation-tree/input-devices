@@ -5,7 +5,7 @@ using Unmanaged;
 
 namespace InputDevices
 {
-    public readonly struct Keyboard : IKeyboard, IDisposable
+    public readonly struct Keyboard : IKeyboard
     {
         private readonly InputDevice device;
 
@@ -31,11 +31,6 @@ namespace InputDevices
             Entity entity = device;
             entity.AddComponent(new IsKeyboard());
             entity.AddComponent(new LastKeyboardState());
-        }
-
-        public readonly void Dispose()
-        {
-            device.Dispose();
         }
 
         Query IEntity.GetQuery(World world)

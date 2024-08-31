@@ -10,7 +10,7 @@ namespace InputDevices
         private readonly InputDevice device;
 
         World IEntity.World => (Entity)device;
-        eint IEntity.Value => (Entity)device;
+        uint IEntity.Value => (Entity)device;
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -20,7 +20,7 @@ namespace InputDevices
         }
 #endif
 
-        public Keyboard(World world, eint existingEntity)
+        public Keyboard(World world, uint existingEntity)
         {
             device = new(world, existingEntity);
         }

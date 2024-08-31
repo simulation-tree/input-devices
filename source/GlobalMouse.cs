@@ -23,7 +23,7 @@ namespace InputDevices
         }
 
         World IEntity.World => (Entity)mouse;
-        eint IEntity.Value => (Entity)mouse;
+        uint IEntity.Value => (Entity)mouse;
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -33,7 +33,7 @@ namespace InputDevices
         }
 #endif
 
-        public GlobalMouse(World world, eint existingEntity)
+        public GlobalMouse(World world, uint existingEntity)
         {
             mouse = new Mouse(world, existingEntity);
         }

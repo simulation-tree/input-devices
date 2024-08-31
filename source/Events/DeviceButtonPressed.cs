@@ -5,18 +5,18 @@ namespace InputDevices.Events
 {
     public readonly struct DeviceButtonPressed
     {
-        public readonly eint device;
+        public readonly uint device;
         public readonly RuntimeType deviceType;
         public readonly uint control;
 
-        private DeviceButtonPressed(eint device, RuntimeType deviceType, uint control)
+        private DeviceButtonPressed(uint device, RuntimeType deviceType, uint control)
         {
             this.device = device;
             this.deviceType = deviceType;
             this.control = control;
         }
 
-        public static DeviceButtonPressed Create<T>(eint device, uint control) where T : unmanaged, IInputDevice
+        public static DeviceButtonPressed Create<T>(uint device, uint control) where T : unmanaged, IInputDevice
         {
             return new(device, RuntimeType.Get<T>(), control);
         }

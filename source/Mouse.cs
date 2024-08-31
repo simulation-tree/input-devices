@@ -39,7 +39,7 @@ namespace InputDevices
         }
 
         World IEntity.World => (Entity)device;
-        eint IEntity.Value => (Entity)device;
+        uint IEntity.Value => (Entity)device;
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -49,7 +49,7 @@ namespace InputDevices
         }
 #endif
 
-        public Mouse(World world, eint existingEntity)
+        public Mouse(World world, uint existingEntity)
         {
             device = new(world, existingEntity);
         }

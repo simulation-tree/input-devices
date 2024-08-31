@@ -38,7 +38,7 @@ namespace InputDevices
 
         public readonly void SetUpdateTime(TimeSpan timestamp)
         {
-            ref LastDeviceUpdateTime state = ref entity.GetComponent<LastDeviceUpdateTime>();
+            ref LastDeviceUpdateTime state = ref entity.GetComponentRef<LastDeviceUpdateTime>();
             state.value = timestamp;
         }
 

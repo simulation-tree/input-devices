@@ -14,12 +14,12 @@ namespace InputDevices
         {
             get
             {
-                ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
+                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
                 return state.Position;
             }
             set
             {
-                ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
+                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
                 state.Position = value;
             }
         }
@@ -28,12 +28,12 @@ namespace InputDevices
         {
             get
             {
-                ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
+                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
                 return state.Scroll;
             }
             set
             {
-                ref IsMouse state = ref ((Entity)device).GetComponent<IsMouse>();
+                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
                 state.Scroll = value;
             }
         }
@@ -70,16 +70,16 @@ namespace InputDevices
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
             Entity entity = device;
-            MouseState state = entity.GetComponent<IsMouse>().state;
-            MouseState lastState = entity.GetComponent<LastMouseState>().value;
+            MouseState state = entity.GetComponentRef<IsMouse>().state;
+            MouseState lastState = entity.GetComponentRef<LastMouseState>().value;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
             Entity entity = device;
-            ref IsMouse currentState = ref entity.GetComponent<IsMouse>();
-            ref LastMouseState lastState = ref entity.GetComponent<LastMouseState>();
+            ref IsMouse currentState = ref entity.GetComponentRef<IsMouse>();
+            ref LastMouseState lastState = ref entity.GetComponentRef<LastMouseState>();
             if (state.value == ButtonState.State.Held)
             {
                 currentState.state[control] = true;

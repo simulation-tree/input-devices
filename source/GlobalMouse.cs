@@ -22,8 +22,9 @@ namespace InputDevices
             set => mouse.Scroll = value;
         }
 
-        World IEntity.World => (Entity)mouse;
-        uint IEntity.Value => (Entity)mouse;
+        readonly uint IEntity.Value => mouse.device.entity.value;
+        readonly World IEntity.World => mouse.device.entity.world;
+        readonly Definition IEntity.Definition => new([RuntimeType.Get<IsMouse>(), RuntimeType.Get<IsGlobal>()], []);
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -41,13 +42,7 @@ namespace InputDevices
         public GlobalMouse(World world)
         {
             mouse = new Mouse(world);
-            Entity entity = mouse;
-            entity.AddComponent(new IsGlobal());
-        }
-
-        Query IEntity.GetQuery(World world)
-        {
-            return new Query(world, RuntimeType.Get<IsMouse>());
+            mouse.device.entity.AddComponent(new IsGlobal());
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
@@ -58,21 +53,6 @@ namespace InputDevices
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
             mouse.SetButtonState(control, state);
-        }
-
-        public static implicit operator InputDevice(GlobalMouse mouse)
-        {
-            return mouse.mouse;
-        }
-
-        public static implicit operator Mouse(GlobalMouse mouse)
-        {
-            return mouse.mouse;
-        }
-
-        public static implicit operator Entity(GlobalMouse mouse)
-        {
-            return mouse.mouse;
         }
     }
 }

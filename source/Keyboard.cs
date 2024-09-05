@@ -7,10 +7,11 @@ namespace InputDevices
 {
     public readonly struct Keyboard : IKeyboard
     {
-        private readonly InputDevice device;
+        public readonly InputDevice device;
 
-        World IEntity.World => (Entity)device;
-        uint IEntity.Value => (Entity)device;
+        uint IEntity.Value => device.entity.value;
+        World IEntity.World => device.entity.world;
+        Definition IEntity.Definition => new([RuntimeType.Get<IsKeyboard>(), RuntimeType.Get<LastKeyboardState>()], []);
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -28,29 +29,21 @@ namespace InputDevices
         public Keyboard(World world)
         {
             device = new(world);
-            Entity entity = device;
-            entity.AddComponent(new IsKeyboard());
-            entity.AddComponent(new LastKeyboardState());
-        }
-
-        Query IEntity.GetQuery(World world)
-        {
-            return new Query(world, RuntimeType.Get<IsKeyboard>());
+            device.entity.AddComponent(new IsKeyboard());
+            device.entity.AddComponent(new LastKeyboardState());
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            Entity entity = device;
-            KeyboardState state = entity.GetComponentRef<IsKeyboard>().state;
-            KeyboardState lastState = entity.GetComponentRef<LastKeyboardState>().value;
+            KeyboardState state = device.entity.GetComponentRef<IsKeyboard>().state;
+            KeyboardState lastState = device.entity.GetComponentRef<LastKeyboardState>().value;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            Entity entity = device;
-            ref IsKeyboard currentState = ref entity.GetComponentRef<IsKeyboard>();
-            ref LastKeyboardState lastState = ref entity.GetComponentRef<LastKeyboardState>();
+            ref IsKeyboard currentState = ref device.entity.GetComponentRef<IsKeyboard>();
+            ref LastKeyboardState lastState = ref device.entity.GetComponentRef<LastKeyboardState>();
             if (state.value == ButtonState.State.Held)
             {
                 currentState.state[control] = true;
@@ -71,16 +64,6 @@ namespace InputDevices
                 currentState.state[control] = false;
                 lastState.value[control] = false;
             }
-        }
-
-        public static implicit operator InputDevice(Keyboard keyboard)
-        {
-            return keyboard.device;
-        }
-
-        public static implicit operator Entity(Keyboard keyboard)
-        {
-            return keyboard.device;
         }
 
         public enum Button : ushort

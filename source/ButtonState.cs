@@ -1,4 +1,5 @@
 ﻿using System;
+using Unmanaged;
 
 namespace InputDevices
 {
@@ -37,33 +38,62 @@ namespace InputDevices
             }
         }
 
-        public readonly override string ToString()
+        public unsafe readonly override string ToString()
         {
-            Span<char> buffer = stackalloc char[16];
-            int length = ToString(buffer);
-            return new string(buffer[..length]);
+            USpan<char> buffer = stackalloc char[16];
+            uint length = ToString(buffer);
+            return new string(buffer.pointer, 0, (int)length);
         }
 
-        public readonly int ToString(Span<char> buffer)
+        public readonly uint ToString(USpan<char> buffer)
         {
             if (value == State.Released)
             {
-                "Released".CopyTo(buffer);
+                buffer[0] = 'R';
+                buffer[1] = 'e';
+                buffer[2] = 'l';
+                buffer[3] = 'e';
+                buffer[4] = 'a';
+                buffer[5] = 's';
+                buffer[6] = 'e';
+                buffer[7] = 'd';
                 return 8;
             }
             else if (value == State.WasPressed)
             {
-                "WasPressed".CopyTo(buffer);
+                buffer[0] = 'W';
+                buffer[1] = 'a';
+                buffer[2] = 's';
+                buffer[3] = 'P';
+                buffer[4] = 'r';
+                buffer[5] = 'e';
+                buffer[6] = 's';
+                buffer[7] = 's';
+                buffer[8] = 'e';
+                buffer[9] = 'd';
                 return 10;
             }
             else if (value == State.Held)
             {
-                "Held".CopyTo(buffer);
+                buffer[0] = 'H';
+                buffer[1] = 'e';
+                buffer[2] = 'l';
+                buffer[3] = 'd';
                 return 4;
             }
             else
             {
-                "WasReleased".CopyTo(buffer);
+                buffer[0] = 'W';
+                buffer[1] = 'a';
+                buffer[2] = 's';
+                buffer[3] = 'R';
+                buffer[4] = 'e';
+                buffer[5] = 'l';
+                buffer[6] = 'e';
+                buffer[7] = 'a';
+                buffer[8] = 's';
+                buffer[9] = 'e';
+                buffer[10] = 'd';
                 return 11;
             }
         }

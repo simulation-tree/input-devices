@@ -8,18 +8,18 @@ namespace InputDevices
 {
     public readonly struct Mouse : IMouse
     {
-        private readonly InputDevice device;
+        public readonly InputDevice device;
 
         public readonly Vector2 Position
         {
             get
             {
-                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
                 return state.Position;
             }
             set
             {
-                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
                 state.Position = value;
             }
         }
@@ -28,18 +28,19 @@ namespace InputDevices
         {
             get
             {
-                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
                 return state.Scroll;
             }
             set
             {
-                ref IsMouse state = ref ((Entity)device).GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
                 state.Scroll = value;
             }
         }
 
-        World IEntity.World => (Entity)device;
-        uint IEntity.Value => (Entity)device;
+        uint IEntity.Value => device.entity.value;
+        World IEntity.World => device.entity.world;
+        Definition IEntity.Definition => new([RuntimeType.Get<IsMouse>(), RuntimeType.Get<LastMouseState>()], []);
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -57,29 +58,21 @@ namespace InputDevices
         public Mouse(World world)
         {
             device = new(world);
-            Entity entity = device;
-            entity.AddComponent(new IsMouse());
-            entity.AddComponent(new LastMouseState());
-        }
-
-        Query IEntity.GetQuery(World world)
-        {
-            return new Query(world, RuntimeType.Get<IsMouse>());
+            device.entity.AddComponent(new IsMouse());
+            device.entity.AddComponent(new LastMouseState());
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            Entity entity = device;
-            MouseState state = entity.GetComponentRef<IsMouse>().state;
-            MouseState lastState = entity.GetComponentRef<LastMouseState>().value;
+            MouseState state = device.entity.GetComponentRef<IsMouse>().state;
+            MouseState lastState = device.entity.GetComponentRef<LastMouseState>().value;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            Entity entity = device;
-            ref IsMouse currentState = ref entity.GetComponentRef<IsMouse>();
-            ref LastMouseState lastState = ref entity.GetComponentRef<LastMouseState>();
+            ref IsMouse currentState = ref device.entity.GetComponentRef<IsMouse>();
+            ref LastMouseState lastState = ref device.entity.GetComponentRef<LastMouseState>();
             if (state.value == ButtonState.State.Held)
             {
                 currentState.state[control] = true;
@@ -100,16 +93,6 @@ namespace InputDevices
                 currentState.state[control] = false;
                 lastState.value[control] = false;
             }
-        }
-
-        public static implicit operator InputDevice(Mouse mouse)
-        {
-            return mouse.device;
-        }
-
-        public static implicit operator Entity(Mouse mouse)
-        {
-            return mouse.device;
         }
 
         public enum Button : byte

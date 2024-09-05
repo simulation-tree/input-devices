@@ -7,10 +7,11 @@ namespace InputDevices
 {
     public readonly struct InputDevice : IEntity
     {
-        private readonly Entity entity;
+        public readonly Entity entity;
 
-        World IEntity.World => entity;
-        uint IEntity.Value => entity;
+        readonly World IEntity.World => entity.world;
+        readonly uint IEntity.Value => entity.value;
+        readonly Definition IEntity.Definition => new([RuntimeType.Get<LastDeviceUpdateTime>()], []);
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -30,21 +31,11 @@ namespace InputDevices
             entity = new(world);
             entity.AddComponent(new LastDeviceUpdateTime());
         }
-
-        Query IEntity.GetQuery(World world)
-        {
-            return new Query(world, RuntimeType.Get<LastDeviceUpdateTime>());
-        }
-
+        
         public readonly void SetUpdateTime(TimeSpan timestamp)
         {
             ref LastDeviceUpdateTime state = ref entity.GetComponentRef<LastDeviceUpdateTime>();
             state.value = timestamp;
-        }
-
-        public static implicit operator Entity(InputDevice device)
-        {
-            return device.entity;
         }
     }
 }

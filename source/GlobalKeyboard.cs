@@ -7,10 +7,11 @@ namespace InputDevices
 {
     public readonly struct GlobalKeyboard : IKeyboard
     {
-        private readonly Keyboard keyboard;
+        public readonly Keyboard keyboard;
 
-        World IEntity.World => (Entity)keyboard;
-        uint IEntity.Value => (Entity)keyboard;
+        readonly World IEntity.World => keyboard.device.entity.world;
+        readonly uint IEntity.Value => keyboard.device.entity.value;
+        readonly Definition IEntity.Definition => new([RuntimeType.Get<IsKeyboard>(), RuntimeType.Get<IsGlobal>()], []);
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -28,13 +29,7 @@ namespace InputDevices
         public GlobalKeyboard(World world)
         {
             keyboard = new(world);
-            Entity entity = keyboard;
-            entity.AddComponent(new IsGlobal());
-        }
-
-        Query IEntity.GetQuery(World world)
-        {
-            return new Query(world, RuntimeType.Get<IsKeyboard>());
+            keyboard.device.entity.AddComponent(new IsGlobal());
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
@@ -45,21 +40,6 @@ namespace InputDevices
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
             keyboard.SetButtonState(control, state);
-        }
-
-        public static implicit operator InputDevice(GlobalKeyboard keyboard)
-        {
-            return keyboard.keyboard;
-        }
-
-        public static implicit operator Keyboard(GlobalKeyboard keyboard)
-        {
-            return keyboard.keyboard;
-        }
-
-        public static implicit operator Entity(GlobalKeyboard keyboard)
-        {
-            return keyboard.keyboard;
         }
     }
 }

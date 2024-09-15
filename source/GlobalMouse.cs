@@ -1,6 +1,7 @@
 ﻿using InputDevices.Components;
 using Simulation;
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using Unmanaged;
 
@@ -39,8 +40,13 @@ namespace InputDevices
             mouse = new Mouse(world, existingEntity);
         }
 
+        /// <summary>
+        /// Creates a global mouse device that receives data regardless
+        /// of the window it belongs to.
+        /// </summary>
         public GlobalMouse(World world)
         {
+            ThrowIfInstanceAlreadyExists(world);
             mouse = new Mouse(world);
             mouse.device.entity.AddComponent(new IsGlobal());
         }
@@ -53,6 +59,15 @@ namespace InputDevices
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
             mouse.SetButtonState(control, state);
+        }
+
+        [Conditional("DEBUG")]
+        private static void ThrowIfInstanceAlreadyExists(World world)
+        {
+            if (world.TryGetFirst(out GlobalMouse _))
+            {
+                throw new InvalidOperationException("There can only be one global mouse instance");
+            }
         }
     }
 }

@@ -66,6 +66,24 @@ namespace InputDevices
             }
         }
 
+        /// <summary>
+        /// All currently pressed keyboard controls.
+        /// </summary>
+        public readonly uint GetPressedControls(USpan<Button> buffer)
+        {
+            uint count = 0;
+            KeyboardState state = device.AsEntity().GetComponent<IsKeyboard>().state;
+            for (uint i = 0; i < KeyboardState.MaxKeyCount; i++)
+            {
+                if (state[i])
+                {
+                    buffer[count++] = (Button)i;
+                }
+            }
+
+            return count;
+        }
+
         public enum Button : ushort
         {
             A = 4,

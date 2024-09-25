@@ -60,9 +60,10 @@ public static class KeyboardExtensions
         controlsChars[(int)Keyboard.Button.Comma] = ',';
         controlsChars[(int)Keyboard.Button.Period] = '.';
         controlsChars[(int)Keyboard.Button.Slash] = '/';
+        controlsChars[(int)Keyboard.Button.LeftShift] = (char)16;
     }
 
-    public static char GetChar(this Keyboard.Button button)
+    public static char GetCharacter(this Keyboard.Button button)
     {
         return controlsChars[(int)button];
     }

@@ -9,9 +9,9 @@ namespace InputDevices
     {
         public readonly InputDevice device;
 
-        uint IEntity.Value => device.entity.value;
-        World IEntity.World => device.entity.world;
-        Definition IEntity.Definition => new([RuntimeType.Get<IsKeyboard>(), RuntimeType.Get<LastKeyboardState>()], []);
+        readonly uint IEntity.Value => device.GetEntityValue();
+        readonly World IEntity.World => device.GetWorld();
+        readonly Definition IEntity.Definition => new([RuntimeType.Get<IsKeyboard>(), RuntimeType.Get<LastKeyboardState>()], []);
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -29,8 +29,13 @@ namespace InputDevices
         public Keyboard(World world)
         {
             device = new(world);
-            device.entity.AddComponent(new IsKeyboard());
-            device.entity.AddComponent(new LastKeyboardState());
+            device.AddComponent(new IsKeyboard());
+            device.AddComponent(new LastKeyboardState());
+        }
+
+        public readonly void Dispose()
+        {
+            device.Dispose();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)

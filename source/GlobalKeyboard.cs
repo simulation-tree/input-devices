@@ -9,8 +9,8 @@ namespace InputDevices
     {
         public readonly Keyboard keyboard;
 
-        readonly World IEntity.World => keyboard.device.entity.world;
-        readonly uint IEntity.Value => keyboard.device.entity.value;
+        readonly World IEntity.World => keyboard.GetWorld();
+        readonly uint IEntity.Value => keyboard.GetEntityValue();
         readonly Definition IEntity.Definition => new([RuntimeType.Get<IsKeyboard>(), RuntimeType.Get<IsGlobal>()], []);
 
 #if NET
@@ -29,7 +29,12 @@ namespace InputDevices
         public GlobalKeyboard(World world)
         {
             keyboard = new(world);
-            keyboard.device.entity.AddComponent(new IsGlobal());
+            keyboard.AddComponent(new IsGlobal());
+        }
+
+        public readonly void Dispose()
+        {
+            keyboard.Dispose();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)

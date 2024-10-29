@@ -48,7 +48,12 @@ namespace InputDevices
         {
             ThrowIfInstanceAlreadyExists(world);
             mouse = new Mouse(world);
-            mouse.device.entity.AddComponent(new IsGlobal());
+            mouse.AddComponent(new IsGlobal());
+        }
+
+        public readonly void Dispose()
+        {
+            mouse.Dispose();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)

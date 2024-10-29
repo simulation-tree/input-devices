@@ -58,8 +58,13 @@ namespace InputDevices
         public Mouse(World world)
         {
             device = new(world);
-            device.entity.AddComponent(new IsMouse());
-            device.entity.AddComponent(new LastMouseState());
+            device.AddComponent(new IsMouse());
+            device.AddComponent(new LastMouseState());
+        }
+
+        public readonly void Dispose()
+        {
+            device.Dispose();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)

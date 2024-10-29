@@ -9,8 +9,8 @@ namespace InputDevices
     {
         public readonly Entity entity;
 
-        readonly World IEntity.World => entity.world;
-        readonly uint IEntity.Value => entity.value;
+        readonly World IEntity.World => entity.GetWorld();
+        readonly uint IEntity.Value => entity.GetEntityValue();
         readonly Definition IEntity.Definition => new([RuntimeType.Get<LastDeviceUpdateTime>()], []);
 
 #if NET
@@ -31,7 +31,12 @@ namespace InputDevices
             entity = new(world);
             entity.AddComponent(new LastDeviceUpdateTime());
         }
-        
+
+        public readonly void Dispose()
+        {
+            entity.Dispose();
+        }
+
         public readonly void SetUpdateTime(TimeSpan timestamp)
         {
             ref LastDeviceUpdateTime state = ref entity.GetComponentRef<LastDeviceUpdateTime>();

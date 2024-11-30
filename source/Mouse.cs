@@ -1,25 +1,24 @@
 ﻿using InputDevices.Components;
-using Simulation;
 using System;
 using System.Numerics;
-using Unmanaged;
+using Worlds;
 
 namespace InputDevices
 {
     public readonly struct Mouse : IMouse
     {
-        public readonly InputDevice device;
+        private readonly InputDevice device;
 
         public readonly Vector2 Position
         {
             get
             {
-                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.AsEntity().GetComponentRef<IsMouse>();
                 return state.Position;
             }
             set
             {
-                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.AsEntity().GetComponentRef<IsMouse>();
                 state.Position = value;
             }
         }
@@ -28,25 +27,25 @@ namespace InputDevices
         {
             get
             {
-                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.AsEntity().GetComponentRef<IsMouse>();
                 return state.Scroll;
             }
             set
             {
-                ref IsMouse state = ref device.entity.GetComponentRef<IsMouse>();
+                ref IsMouse state = ref device.AsEntity().GetComponentRef<IsMouse>();
                 state.Scroll = value;
             }
         }
 
-        uint IEntity.Value => device.entity.value;
-        World IEntity.World => device.entity.world;
-        Definition IEntity.Definition => new([RuntimeType.Get<IsMouse>(), RuntimeType.Get<LastMouseState>()], []);
+        readonly uint IEntity.Value => device.GetEntityValue();
+        readonly World IEntity.World => device.GetWorld();
+        readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsMouse, LastMouseState>();
 
 #if NET
         [Obsolete("Default constructor not available", true)]
         public Mouse()
         {
-            throw new InvalidOperationException("Cannot create a mouse without a world.");
+            throw new NotSupportedException("Default constructor not available");
         }
 #endif
 
@@ -69,15 +68,15 @@ namespace InputDevices
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            MouseState state = device.entity.GetComponentRef<IsMouse>().state;
-            MouseState lastState = device.entity.GetComponentRef<LastMouseState>().value;
+            MouseState state = device.AsEntity().GetComponentRef<IsMouse>().state;
+            MouseState lastState = device.AsEntity().GetComponentRef<LastMouseState>().value;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            ref IsMouse currentState = ref device.entity.GetComponentRef<IsMouse>();
-            ref LastMouseState lastState = ref device.entity.GetComponentRef<LastMouseState>();
+            ref IsMouse currentState = ref device.AsEntity().GetComponentRef<IsMouse>();
+            ref LastMouseState lastState = ref device.AsEntity().GetComponentRef<LastMouseState>();
             if (state.value == ButtonState.State.Held)
             {
                 currentState.state[control] = true;
@@ -98,6 +97,16 @@ namespace InputDevices
                 currentState.state[control] = false;
                 lastState.value[control] = false;
             }
+        }
+
+        public static implicit operator InputDevice(Mouse mouse)
+        {
+            return mouse.device;
+        }
+
+        public static implicit operator Entity(Mouse mouse)
+        {
+            return mouse.device.AsEntity();
         }
 
         public enum Button : byte

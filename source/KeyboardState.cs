@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace InputDevices.Components
+namespace InputDevices
 {
     public unsafe struct KeyboardState
     {
@@ -13,15 +13,6 @@ namespace InputDevices.Components
         {
             get => IsKeyDown(index);
             set => SetKeyDown(index, value);
-        }
-
-        [Conditional("DEBUG")]
-        private readonly void ThrowIfOutOfRange(uint index)
-        {
-            if (index >= MaxKeyCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
         }
 
         public override int GetHashCode()
@@ -60,6 +51,15 @@ namespace InputDevices.Components
             else
             {
                 keys[arrayIndex] &= ~mask;
+            }
+        }
+
+        [Conditional("DEBUG")]
+        private static void ThrowIfOutOfRange(uint index)
+        {
+            if (index >= MaxKeyCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
     }

@@ -1,5 +1,8 @@
-﻿namespace InputDevices.Components
+﻿using Worlds;
+
+namespace InputDevices.Components
 {
+    [Component]
     public struct IsKeyboard
     {
         public KeyboardState state;

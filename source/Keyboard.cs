@@ -1,17 +1,17 @@
 ﻿using InputDevices.Components;
-using Simulation;
 using System;
 using Unmanaged;
+using Worlds;
 
 namespace InputDevices
 {
     public readonly struct Keyboard : IKeyboard
     {
-        public readonly InputDevice device;
+        private readonly InputDevice device;
 
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
-        readonly Definition IEntity.Definition => new([RuntimeType.Get<IsKeyboard>(), RuntimeType.Get<LastKeyboardState>()], []);
+        readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsKeyboard, LastKeyboardState>();
 
 #if NET
         [Obsolete("Default constructor not available", true)]
@@ -40,15 +40,15 @@ namespace InputDevices
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            KeyboardState state = device.entity.GetComponentRef<IsKeyboard>().state;
-            KeyboardState lastState = device.entity.GetComponentRef<LastKeyboardState>().value;
+            KeyboardState state = device.AsEntity().GetComponentRef<IsKeyboard>().state;
+            KeyboardState lastState = device.AsEntity().GetComponentRef<LastKeyboardState>().value;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            ref IsKeyboard currentState = ref device.entity.GetComponentRef<IsKeyboard>();
-            ref LastKeyboardState lastState = ref device.entity.GetComponentRef<LastKeyboardState>();
+            ref IsKeyboard currentState = ref device.AsEntity().GetComponentRef<IsKeyboard>();
+            ref LastKeyboardState lastState = ref device.AsEntity().GetComponentRef<LastKeyboardState>();
             if (state.value == ButtonState.State.Held)
             {
                 currentState.state[control] = true;
@@ -87,6 +87,16 @@ namespace InputDevices
             }
 
             return count;
+        }
+
+        public static implicit operator InputDevice(Keyboard keyboard)
+        {
+            return keyboard.device;
+        }
+
+        public static implicit operator Entity(Keyboard keyboard)
+        {
+            return keyboard.device.AsEntity();
         }
 
         public enum Button : ushort

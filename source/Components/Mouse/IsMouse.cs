@@ -1,7 +1,9 @@
 ﻿using System.Numerics;
+using Worlds;
 
 namespace InputDevices.Components
 {
+    [Component]
     public struct IsMouse
     {
         public MouseState state;

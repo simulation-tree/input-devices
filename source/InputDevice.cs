@@ -1,17 +1,16 @@
 ﻿using InputDevices.Components;
-using Simulation;
 using System;
-using Unmanaged;
+using Worlds;
 
 namespace InputDevices
 {
     public readonly struct InputDevice : IEntity
     {
-        public readonly Entity entity;
+        private readonly Entity entity;
 
         readonly World IEntity.World => entity.GetWorld();
         readonly uint IEntity.Value => entity.GetEntityValue();
-        readonly Definition IEntity.Definition => new([RuntimeType.Get<LastDeviceUpdateTime>()], []);
+        readonly Definition IEntity.Definition => new Definition().AddComponentType<LastDeviceUpdateTime>();
 
 #if NET
         [Obsolete("Default constructor not available", true)]

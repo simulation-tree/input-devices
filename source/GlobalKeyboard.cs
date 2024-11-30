@@ -1,28 +1,29 @@
 ﻿using InputDevices.Components;
-using Simulation;
 using System;
-using Unmanaged;
+using System.Diagnostics;
+using Worlds;
 
 namespace InputDevices
 {
     public readonly struct GlobalKeyboard : IKeyboard
     {
-        public readonly Keyboard keyboard;
+        private readonly Keyboard keyboard;
 
         readonly World IEntity.World => keyboard.GetWorld();
         readonly uint IEntity.Value => keyboard.GetEntityValue();
-        readonly Definition IEntity.Definition => new([RuntimeType.Get<IsKeyboard>(), RuntimeType.Get<IsGlobal>()], []);
+        readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsGlobal, LastKeyboardState>();
 
 #if NET
         [Obsolete("Default constructor not available", true)]
         public GlobalKeyboard()
         {
-            throw new InvalidOperationException("Cannot create a global keyboard without a world.");
+            throw new InvalidOperationException("Cannot create a global keyboard without a world");
         }
 #endif
 
         public GlobalKeyboard(World world, uint existingEntity)
         {
+            ThrowIfInstanceAlreadyExists(world);
             keyboard = new(world, existingEntity);
         }
 
@@ -45,6 +46,30 @@ namespace InputDevices
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
             keyboard.SetButtonState(control, state);
+        }
+
+        [Conditional("DEBUG")]
+        private static void ThrowIfInstanceAlreadyExists(World world)
+        {
+            if (world.TryGetFirst(out GlobalKeyboard _))
+            {
+                throw new InvalidOperationException($"There can only be one `{nameof(GlobalKeyboard)}` instance");
+            }
+        }
+
+        public static implicit operator Keyboard(GlobalKeyboard globalKeyboard)
+        {
+            return globalKeyboard.keyboard;
+        }
+
+        public static implicit operator InputDevice(GlobalKeyboard globalKeyboard)
+        {
+            return globalKeyboard.keyboard;
+        }
+
+        public static implicit operator Entity(GlobalKeyboard globalKeyboard)
+        {
+            return globalKeyboard.keyboard;
         }
     }
 }

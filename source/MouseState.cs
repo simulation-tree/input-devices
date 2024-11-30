@@ -1,4 +1,4 @@
-﻿namespace InputDevices.Components
+﻿namespace InputDevices
 {
     public struct MouseState
     {

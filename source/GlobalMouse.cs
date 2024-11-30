@@ -1,9 +1,8 @@
 ﻿using InputDevices.Components;
-using Simulation;
 using System;
 using System.Diagnostics;
 using System.Numerics;
-using Unmanaged;
+using Worlds;
 
 namespace InputDevices
 {
@@ -23,15 +22,15 @@ namespace InputDevices
             set => mouse.Scroll = value;
         }
 
-        readonly uint IEntity.Value => mouse.device.entity.value;
-        readonly World IEntity.World => mouse.device.entity.world;
-        readonly Definition IEntity.Definition => new([RuntimeType.Get<IsMouse>(), RuntimeType.Get<IsGlobal>()], []);
+        readonly uint IEntity.Value => mouse.GetEntityValue();
+        readonly World IEntity.World => mouse.GetWorld();
+        readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsGlobal, IsMouse>();
 
 #if NET
         [Obsolete("Default constructor not available", true)]
         public GlobalMouse()
         {
-            throw new InvalidOperationException("Cannot create a global mouse without a world.");
+            throw new InvalidOperationException("Cannot create a global mouse without a world");
         }
 #endif
 
@@ -71,8 +70,23 @@ namespace InputDevices
         {
             if (world.TryGetFirst(out GlobalMouse _))
             {
-                throw new InvalidOperationException("There can only be one global mouse instance");
+                throw new InvalidOperationException($"There can only be one `{nameof(GlobalMouse)}` instance");
             }
+        }
+
+        public static implicit operator Mouse(GlobalMouse globalMouse)
+        {
+            return globalMouse.mouse;
+        }
+
+        public static implicit operator InputDevice(GlobalMouse globalMouse)
+        {
+            return globalMouse.mouse;
+        }
+
+        public static implicit operator Entity(GlobalMouse globalMouse)
+        {
+            return globalMouse.mouse;
         }
     }
 }

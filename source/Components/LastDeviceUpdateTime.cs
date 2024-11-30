@@ -1,7 +1,9 @@
 ﻿using System;
+using Worlds;
 
 namespace InputDevices.Components
 {
+    [Component]
     public struct LastDeviceUpdateTime
     {
         public TimeSpan value;

@@ -1,5 +1,4 @@
-﻿using InputDevices.Components;
-using System;
+﻿using System;
 using System.Diagnostics;
 
 namespace InputDevices
@@ -85,7 +84,7 @@ namespace InputDevices
             int index = (int)button;
             if (index < 0 || index >= controlsCharacters.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(button), button, $"Unknown keyboard button {button}");
+                throw new ArgumentOutOfRangeException(nameof(button), button, $"Unknown keyboard button `{button}`");
             }
         }
     }

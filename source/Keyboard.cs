@@ -40,15 +40,15 @@ namespace InputDevices
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            KeyboardState state = device.AsEntity().GetComponentRef<IsKeyboard>().state;
-            KeyboardState lastState = device.AsEntity().GetComponentRef<LastKeyboardState>().value;
+            KeyboardState state = device.AsEntity().GetComponent<IsKeyboard>().state;
+            KeyboardState lastState = device.AsEntity().GetComponent<LastKeyboardState>().value;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            ref IsKeyboard currentState = ref device.AsEntity().GetComponentRef<IsKeyboard>();
-            ref LastKeyboardState lastState = ref device.AsEntity().GetComponentRef<LastKeyboardState>();
+            ref IsKeyboard currentState = ref device.AsEntity().GetComponent<IsKeyboard>();
+            ref LastKeyboardState lastState = ref device.AsEntity().GetComponent<LastKeyboardState>();
             if (state.value == ButtonState.State.Held)
             {
                 currentState.state[control] = true;

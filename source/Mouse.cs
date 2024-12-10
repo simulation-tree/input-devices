@@ -9,31 +9,21 @@ namespace InputDevices
     {
         private readonly InputDevice device;
 
-        public readonly Vector2 Position
+        public readonly ref Vector2 Position
         {
             get
             {
                 ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                return state.Position;
-            }
-            set
-            {
-                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                state.Position = value;
+                return ref state.Position;
             }
         }
 
-        public readonly Vector2 Scroll
+        public readonly ref Vector2 Scroll
         {
             get
             {
                 ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                return state.Scroll;
-            }
-            set
-            {
-                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                state.Scroll = value;
+                return ref state.Scroll;
             }
         }
 

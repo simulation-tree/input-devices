@@ -8,16 +8,26 @@ namespace InputDevices.Components
     {
         public MouseState state;
 
-        public Vector2 Position
+        public unsafe ref Vector2 Position
         {
-            readonly get => new(state.positionX, state.positionY);
-            set => state = new((int)value.X, (int)value.Y, state.scrollX, state.scrollY, state.buttons);
+            get
+            {
+                fixed (Vector2* position = &state.position)
+                {
+                    return ref *position;
+                }
+            }
         }
 
-        public Vector2 Scroll
+        public unsafe ref Vector2 Scroll
         {
-            readonly get => new(state.scrollX, state.scrollY);
-            set => state = new(state.positionX, state.positionY, (int)value.X, (int)value.Y, state.buttons);
+            get
+            {
+                fixed (Vector2* scroll = &state.scroll)
+                {
+                    return ref *scroll;
+                }
+            }
         }
 
         public IsMouse(MouseState state)

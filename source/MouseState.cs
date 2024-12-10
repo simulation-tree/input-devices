@@ -1,13 +1,13 @@
-﻿namespace InputDevices
+﻿using System.Numerics;
+
+namespace InputDevices
 {
     public struct MouseState
     {
         public const uint MaxButtonCount = 5;
 
-        public int positionX;
-        public int positionY;
-        public int scrollX;
-        public int scrollY;
+        public Vector2 position;
+        public Vector2 scroll;
         public byte buttons;
 
         public bool this[Mouse.Button button]
@@ -32,12 +32,10 @@
             }
         }
 
-        public MouseState(int positionX, int positionY, int scrollX, int scrollY, byte buttons = default)
+        public MouseState(Vector2 position, Vector2 scroll, byte buttons = default)
         {
-            this.positionX = positionX;
-            this.positionY = positionY;
-            this.scrollX = scrollX;
-            this.scrollY = scrollY;
+            this.position = position;
+            this.scroll = scroll;
             this.buttons = buttons;
         }
     }

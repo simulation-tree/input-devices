@@ -27,6 +27,9 @@ namespace InputDevices
             }
         }
 
+        public readonly ref MouseState State => ref device.AsEntity().GetComponent<IsMouse>().state;
+        public readonly ref MouseState LastState => ref device.AsEntity().GetComponent<LastMouseState>().value;
+
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
         readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsMouse, LastMouseState>();
@@ -58,34 +61,34 @@ namespace InputDevices
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            MouseState state = device.AsEntity().GetComponent<IsMouse>().state;
-            MouseState lastState = device.AsEntity().GetComponent<LastMouseState>().value;
+            ref MouseState state = ref State;
+            ref MouseState lastState = ref LastState;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            ref IsMouse currentState = ref device.AsEntity().GetComponent<IsMouse>();
-            ref LastMouseState lastState = ref device.AsEntity().GetComponent<LastMouseState>();
+            ref MouseState currentState = ref State;
+            ref MouseState lastState = ref LastState;
             if (state.value == ButtonState.State.Held)
             {
-                currentState.state[control] = true;
-                lastState.value[control] = true;
+                currentState[control] = true;
+                lastState[control] = true;
             }
             else if (state.value == ButtonState.State.WasPressed)
             {
-                currentState.state[control] = true;
-                lastState.value[control] = false;
+                currentState[control] = true;
+                lastState[control] = false;
             }
             else if (state.value == ButtonState.State.WasReleased)
             {
-                currentState.state[control] = false;
-                lastState.value[control] = true;
+                currentState[control] = false;
+                lastState[control] = true;
             }
             else
             {
-                currentState.state[control] = false;
-                lastState.value[control] = false;
+                currentState[control] = false;
+                lastState[control] = false;
             }
         }
 

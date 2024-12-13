@@ -9,6 +9,9 @@ namespace InputDevices
     {
         private readonly InputDevice device;
 
+        public readonly ref KeyboardState State => ref device.AsEntity().GetComponent<IsKeyboard>().state;
+        public readonly ref KeyboardState LastState => ref device.AsEntity().GetComponent<LastKeyboardState>().value;
+
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
         readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsKeyboard, LastKeyboardState>();
@@ -40,34 +43,34 @@ namespace InputDevices
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            KeyboardState state = device.AsEntity().GetComponent<IsKeyboard>().state;
-            KeyboardState lastState = device.AsEntity().GetComponent<LastKeyboardState>().value;
+            ref KeyboardState state = ref State;
+            ref KeyboardState lastState = ref LastState;
             return new ButtonState(state[control], lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            ref IsKeyboard currentState = ref device.AsEntity().GetComponent<IsKeyboard>();
-            ref LastKeyboardState lastState = ref device.AsEntity().GetComponent<LastKeyboardState>();
+            ref KeyboardState currentState = ref State;
+            ref KeyboardState lastState = ref LastState;
             if (state.value == ButtonState.State.Held)
             {
-                currentState.state[control] = true;
-                lastState.value[control] = true;
+                currentState[control] = true;
+                lastState[control] = true;
             }
             else if (state.value == ButtonState.State.WasPressed)
             {
-                currentState.state[control] = true;
-                lastState.value[control] = false;
+                currentState[control] = true;
+                lastState[control] = false;
             }
             else if (state.value == ButtonState.State.WasReleased)
             {
-                currentState.state[control] = false;
-                lastState.value[control] = true;
+                currentState[control] = false;
+                lastState[control] = true;
             }
             else
             {
-                currentState.state[control] = false;
-                lastState.value[control] = false;
+                currentState[control] = false;
+                lastState[control] = false;
             }
         }
 
@@ -77,7 +80,7 @@ namespace InputDevices
         public readonly uint GetPressedControls(USpan<Button> buffer)
         {
             uint count = 0;
-            KeyboardState state = device.AsEntity().GetComponent<IsKeyboard>().state;
+            ref KeyboardState state = ref State;
             for (uint i = 0; i < KeyboardState.MaxKeyCount; i++)
             {
                 if (state[i])

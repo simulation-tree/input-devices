@@ -9,6 +9,7 @@ namespace InputDevices
         public Vector2 position;
         public Vector2 scroll;
         public byte buttons;
+        public Mouse.Cursor cursor;
 
         public bool this[Mouse.Button button]
         {

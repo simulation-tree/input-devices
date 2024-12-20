@@ -110,5 +110,29 @@ namespace InputDevices
             ForwardButton = 4,
             BackButton = 5
         }
+
+        public enum Cursor : byte
+        {
+            Default = 0,
+            Text = 1,
+            Wait = 2,
+            Crosshair = 3,
+            WaitWithArrow = 4,
+            ResizeNWSE = 5,
+            ResizeNESW = 6,
+            ResizeHorizontal = 7,
+            ResizeVertical = 8,
+            ResizeAll = 9,
+            NotAllowed = 10,
+            Hand = 11,
+            ResizeNW = 12,
+            ResizeN = 13,
+            ResizeNE = 14,
+            ResizeE = 15,
+            ResizeSE = 16,
+            ResizeS = 17,
+            ResizeSW = 18,
+            ResizeW = 19
+        }
     }
 }

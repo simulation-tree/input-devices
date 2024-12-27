@@ -11,7 +11,11 @@ namespace InputDevices
 
         readonly World IEntity.World => keyboard.GetWorld();
         readonly uint IEntity.Value => keyboard.GetEntityValue();
-        readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsGlobal, LastKeyboardState>();
+
+        readonly Definition IEntity.GetDefinition(Schema schema)
+        {
+            return Definition.Get<Keyboard>(schema).AddComponentType<IsGlobal>(schema);
+        }
 
 #if NET
         [Obsolete("Default constructor not available", true)]

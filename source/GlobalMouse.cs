@@ -24,7 +24,11 @@ namespace InputDevices
 
         readonly uint IEntity.Value => mouse.GetEntityValue();
         readonly World IEntity.World => mouse.GetWorld();
-        readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsGlobal, IsMouse>();
+
+        readonly Definition IEntity.GetDefinition(Schema schema)
+        {
+            return Definition.Get<Mouse>(schema).AddComponentType<IsGlobal>(schema);
+        }
 
 #if NET
         [Obsolete("Default constructor not available", true)]

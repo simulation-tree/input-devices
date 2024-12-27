@@ -10,7 +10,11 @@ namespace InputDevices
 
         readonly World IEntity.World => entity.GetWorld();
         readonly uint IEntity.Value => entity.GetEntityValue();
-        readonly Definition IEntity.Definition => new Definition().AddComponentType<LastDeviceUpdateTime>();
+
+        readonly Definition IEntity.GetDefinition(Schema schema)
+        {
+            return new Definition().AddComponentType<LastDeviceUpdateTime>(schema);
+        }
 
 #if NET
         [Obsolete("Default constructor not available", true)]

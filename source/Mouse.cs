@@ -32,7 +32,11 @@ namespace InputDevices
 
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
-        readonly Definition IEntity.Definition => new Definition().AddComponentTypes<IsMouse, LastMouseState>();
+
+        readonly Definition IEntity.GetDefinition(Schema schema)
+        {
+            return new Definition().AddComponentTypes<IsMouse, LastMouseState>(schema);
+        }
 
 #if NET
         [Obsolete("Default constructor not available", true)]

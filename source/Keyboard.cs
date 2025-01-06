@@ -15,9 +15,11 @@ namespace InputDevices
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
 
-        readonly Definition IEntity.GetDefinition(Schema schema)
+        readonly void IEntity.Describe(ref Archetype archetype)
         {
-            return new Definition().AddComponentTypes<IsKeyboard, LastKeyboardState>(schema);
+            archetype.AddComponentType<IsKeyboard>();
+            archetype.AddComponentType<LastKeyboardState>();
+            archetype.Add<InputDevice>();
         }
 
 #if NET

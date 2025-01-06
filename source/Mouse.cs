@@ -33,9 +33,11 @@ namespace InputDevices
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
 
-        readonly Definition IEntity.GetDefinition(Schema schema)
+        readonly void IEntity.Describe(ref Archetype archetype)
         {
-            return new Definition().AddComponentTypes<IsMouse, LastMouseState>(schema);
+            archetype.AddComponentType<IsMouse>();
+            archetype.AddComponentType<LastMouseState>();
+            archetype.Add<InputDevice>();
         }
 
 #if NET

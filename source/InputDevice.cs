@@ -11,9 +11,9 @@ namespace InputDevices
         readonly World IEntity.World => entity.GetWorld();
         readonly uint IEntity.Value => entity.GetEntityValue();
 
-        readonly Definition IEntity.GetDefinition(Schema schema)
+        readonly void IEntity.Describe(ref Archetype archetype)
         {
-            return new Definition().AddComponentType<LastDeviceUpdateTime>(schema);
+            archetype.AddComponentType<LastDeviceUpdateTime>();
         }
 
 #if NET

@@ -11,6 +11,37 @@ namespace InputDevices
 
         public readonly ref KeyboardState State => ref device.AsEntity().GetComponent<IsKeyboard>().state;
         public readonly ref KeyboardState LastState => ref device.AsEntity().GetComponent<LastKeyboardState>().value;
+        
+        public readonly Entity Window
+        {
+            get
+            {
+                ref IsKeyboard component = ref device.AsEntity().GetComponent<IsKeyboard>();
+                uint windowEntity = device.GetReference(component.windowReference);
+                return new(device.GetWorld(), windowEntity);
+            }
+            set
+            {
+                ref IsKeyboard component = ref device.AsEntity().GetComponent<IsKeyboard>();
+                ref rint windowReference = ref component.windowReference;
+                if (windowReference == default)
+                {
+                    windowReference = device.AddReference(value);
+                }
+                else
+                {
+                    uint windowEntity = device.GetReference(windowReference);
+                    if (windowEntity != value)
+                    {
+                        device.SetReference(windowReference, value);
+                    }
+                    else
+                    {
+                        //same window
+                    }
+                }
+            }
+        }
 
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
@@ -38,7 +69,7 @@ namespace InputDevices
         public Keyboard(World world)
         {
             device = new(world);
-            device.AddComponent(new IsKeyboard());
+            device.AddComponent(new IsKeyboard(default, default));
             device.AddComponent(new LastKeyboardState());
         }
 

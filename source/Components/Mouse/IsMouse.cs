@@ -7,6 +7,7 @@ namespace InputDevices.Components
     public struct IsMouse
     {
         public MouseState state;
+        public rint windowReference;
 
         public unsafe ref Vector2 Position
         {
@@ -30,9 +31,10 @@ namespace InputDevices.Components
             }
         }
 
-        public IsMouse(MouseState state)
+        public IsMouse(MouseState state, rint windowReference)
         {
             this.state = state;
+            this.windowReference = windowReference;
         }
     }
 }

@@ -30,6 +30,37 @@ namespace InputDevices
         public readonly ref MouseState State => ref device.AsEntity().GetComponent<IsMouse>().state;
         public readonly ref MouseState LastState => ref device.AsEntity().GetComponent<LastMouseState>().value;
 
+        public readonly Entity Window
+        {
+            get
+            {
+                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
+                uint windowEntity = device.GetReference(state.windowReference);
+                return new(device.GetWorld(), windowEntity);
+            }
+            set
+            {
+                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
+                ref rint windowReference = ref state.windowReference;
+                if (windowReference == default)
+                {
+                    windowReference = device.AddReference(value);
+                }
+                else
+                {
+                    uint windowEntity = device.GetReference(windowReference);
+                    if (windowEntity != value.GetEntityValue())
+                    {
+                        device.SetReference(windowReference, value);
+                    }
+                    else
+                    {
+                        //same window
+                    }
+                }
+            }
+        }
+
         readonly uint IEntity.Value => device.GetEntityValue();
         readonly World IEntity.World => device.GetWorld();
 

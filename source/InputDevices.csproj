@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\worlds\source\Worlds.csproj" />
+		<ProjectReference Include="..\..\worlds\core\Worlds.Core.csproj" />
 	</ItemGroup>
 
 </Project>

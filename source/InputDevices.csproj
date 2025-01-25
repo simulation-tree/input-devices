@@ -8,6 +8,10 @@
 		<IsAotCompatible>True</IsAotCompatible>
 		<WarningLevel>8</WarningLevel>
 		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<Title>Input Devices</Title>
+		<Authors>popcron</Authors>
+		<Company>game-simulations</Company>
+		<RepositoryUrl>https://github.com/game-simulations/input-devices</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>

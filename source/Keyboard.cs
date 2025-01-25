@@ -61,11 +61,6 @@ namespace InputDevices
         }
 #endif
 
-        public Keyboard(World world, uint existingEntity)
-        {
-            device = new(world, existingEntity);
-        }
-
         public Keyboard(World world)
         {
             device = new(world);

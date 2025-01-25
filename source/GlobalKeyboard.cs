@@ -14,7 +14,7 @@ namespace InputDevices
 
         readonly void IEntity.Describe(ref Archetype archetype)
         {
-            archetype.AddComponentType<IsGlobal>();
+            archetype.AddTagType<IsGlobal>();
             archetype.Add<Keyboard>();
         }
 
@@ -26,16 +26,12 @@ namespace InputDevices
         }
 #endif
 
-        public GlobalKeyboard(World world, uint existingEntity)
-        {
-            ThrowIfInstanceAlreadyExists(world);
-            keyboard = new(world, existingEntity);
-        }
-
         public GlobalKeyboard(World world)
         {
+            ThrowIfInstanceAlreadyExists(world);
+
             keyboard = new(world);
-            keyboard.AddComponent(new IsGlobal());
+            keyboard.AsEntity().AddTag<IsGlobal>();
         }
 
         public readonly void Dispose()

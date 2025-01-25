@@ -27,7 +27,7 @@ namespace InputDevices
 
         readonly void IEntity.Describe(ref Archetype archetype)
         {
-            archetype.AddComponentType<IsGlobal>();
+            archetype.AddTagType<IsGlobal>();
             archetype.Add<Mouse>();
         }
 
@@ -39,11 +39,6 @@ namespace InputDevices
         }
 #endif
 
-        public GlobalMouse(World world, uint existingEntity)
-        {
-            mouse = new Mouse(world, existingEntity);
-        }
-
         /// <summary>
         /// Creates a global mouse device that receives data regardless
         /// of the window it belongs to.
@@ -51,8 +46,9 @@ namespace InputDevices
         public GlobalMouse(World world)
         {
             ThrowIfInstanceAlreadyExists(world);
+
             mouse = new Mouse(world);
-            mouse.AddComponent(new IsGlobal());
+            mouse.AsEntity().AddTag<IsGlobal>();
         }
 
         public readonly void Dispose()

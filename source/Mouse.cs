@@ -79,11 +79,6 @@ namespace InputDevices
         }
 #endif
 
-        public Mouse(World world, uint existingEntity)
-        {
-            device = new(world, existingEntity);
-        }
-
         public Mouse(World world)
         {
             device = new(world);

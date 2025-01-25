@@ -6,7 +6,7 @@ namespace InputDevices.Components
     /// Indicates that the device state is read from global state,
     /// rather than requiring it to be part of a window.
     /// </summary>
-    [Component]
+    [Tag]
     public struct IsGlobal
     {
     }

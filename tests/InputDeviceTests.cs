@@ -8,13 +8,13 @@ namespace InputDevices.Tests
     {
         static InputDeviceTests()
         {
-            TypeRegistry.Load<InputDevices.TypeBank>();
+            TypeRegistry.Load<InputDevicesTypeBank>();
         }
 
         protected override Schema CreateSchema()
         {
             Schema schema = base.CreateSchema();
-            schema.Load<InputDevices.SchemaBank>();
+            schema.Load<InputDevicesSchemaBank>();
             return schema;
         }
     }

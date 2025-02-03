@@ -1,6 +1,6 @@
 ﻿namespace InputDevices
 {
-    public static class InputDeviceFunctions
+    public static class InputDeviceExtensions
     {
         public static bool WasPressed<T, C>(this T device, C control) where T : unmanaged, IInputDevice where C : unmanaged
         {

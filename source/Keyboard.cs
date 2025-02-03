@@ -1,39 +1,36 @@
 ﻿using InputDevices.Components;
-using System;
 using Unmanaged;
 using Worlds;
 
 namespace InputDevices
 {
-    public readonly struct Keyboard : IKeyboard
+    public readonly partial struct Keyboard : IKeyboard
     {
-        private readonly InputDevice device;
+        public readonly ref KeyboardState State => ref GetComponent<IsKeyboard>().state;
+        public readonly ref KeyboardState LastState => ref GetComponent<LastKeyboardState>().value;
 
-        public readonly ref KeyboardState State => ref device.AsEntity().GetComponent<IsKeyboard>().state;
-        public readonly ref KeyboardState LastState => ref device.AsEntity().GetComponent<LastKeyboardState>().value;
-        
         public readonly Entity Window
         {
             get
             {
-                ref IsKeyboard component = ref device.AsEntity().GetComponent<IsKeyboard>();
-                uint windowEntity = device.GetReference(component.windowReference);
-                return new(device.GetWorld(), windowEntity);
+                ref IsKeyboard component = ref GetComponent<IsKeyboard>();
+                uint windowEntity = GetReference(component.windowReference);
+                return new Entity(world, windowEntity);
             }
             set
             {
-                ref IsKeyboard component = ref device.AsEntity().GetComponent<IsKeyboard>();
+                ref IsKeyboard component = ref GetComponent<IsKeyboard>();
                 ref rint windowReference = ref component.windowReference;
                 if (windowReference == default)
                 {
-                    windowReference = device.AddReference(value);
+                    windowReference = AddReference(value);
                 }
                 else
                 {
-                    uint windowEntity = device.GetReference(windowReference);
-                    if (windowEntity != value)
+                    uint windowEntity = GetReference(windowReference);
+                    if (windowEntity != value.value)
                     {
-                        device.SetReference(windowReference, value);
+                        SetReference(windowReference, value);
                     }
                     else
                     {
@@ -43,34 +40,17 @@ namespace InputDevices
             }
         }
 
-        readonly uint IEntity.Value => device.GetEntityValue();
-        readonly World IEntity.World => device.GetWorld();
+        public Keyboard(World world)
+        {
+            this.world = world;
+            value = world.CreateEntity(new IsKeyboard(default, default), new LastKeyboardState(), new LastDeviceUpdateTime());
+        }
 
         readonly void IEntity.Describe(ref Archetype archetype)
         {
+            archetype.Add<InputDevice>();
             archetype.AddComponentType<IsKeyboard>();
             archetype.AddComponentType<LastKeyboardState>();
-            archetype.Add<InputDevice>();
-        }
-
-#if NET
-        [Obsolete("Default constructor not available", true)]
-        public Keyboard()
-        {
-            throw new InvalidOperationException("Cannot create a keyboard without a world.");
-        }
-#endif
-
-        public Keyboard(World world)
-        {
-            device = new(world);
-            device.AddComponent(new IsKeyboard(default, default));
-            device.AddComponent(new LastKeyboardState());
-        }
-
-        public readonly void Dispose()
-        {
-            device.Dispose();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
@@ -126,12 +106,7 @@ namespace InputDevices
 
         public static implicit operator InputDevice(Keyboard keyboard)
         {
-            return keyboard.device;
-        }
-
-        public static implicit operator Entity(Keyboard keyboard)
-        {
-            return keyboard.device.AsEntity();
+            return keyboard.As<InputDevice>();
         }
 
         public enum Button : ushort

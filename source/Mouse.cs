@@ -5,53 +5,35 @@ using Worlds;
 
 namespace InputDevices
 {
-    public readonly struct Mouse : IMouse
+    public readonly partial struct Mouse : IMouse
     {
-        private readonly InputDevice device;
-
-        public readonly ref Vector2 Position
-        {
-            get
-            {
-                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                return ref state.Position;
-            }
-        }
-
-        public readonly ref Vector2 Scroll
-        {
-            get
-            {
-                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                return ref state.Scroll;
-            }
-        }
-
-        public readonly ref MouseState State => ref device.AsEntity().GetComponent<IsMouse>().state;
-        public readonly ref MouseState LastState => ref device.AsEntity().GetComponent<LastMouseState>().value;
+        public readonly ref Vector2 Position => ref GetComponent<IsMouse>().state.position;
+        public readonly ref Vector2 Scroll => ref GetComponent<IsMouse>().state.scroll;
+        public readonly ref MouseState State => ref GetComponent<IsMouse>().state;
+        public readonly ref MouseState LastState => ref GetComponent<LastMouseState>().value;
 
         public readonly Entity Window
         {
             get
             {
-                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                uint windowEntity = device.GetReference(state.windowReference);
-                return new(device.GetWorld(), windowEntity);
+                ref IsMouse component = ref GetComponent<IsMouse>();
+                uint windowEntity = GetReference(component.windowReference);
+                return new Entity(world, windowEntity);
             }
             set
             {
-                ref IsMouse state = ref device.AsEntity().GetComponent<IsMouse>();
-                ref rint windowReference = ref state.windowReference;
+                ref IsMouse component = ref GetComponent<IsMouse>();
+                ref rint windowReference = ref component.windowReference;
                 if (windowReference == default)
                 {
-                    windowReference = device.AddReference(value);
+                    windowReference = AddReference(value);
                 }
                 else
                 {
-                    uint windowEntity = device.GetReference(windowReference);
-                    if (windowEntity != value.GetEntityValue())
+                    uint windowEntity = GetReference(windowReference);
+                    if (windowEntity != value.value)
                     {
-                        device.SetReference(windowReference, value);
+                        SetReference(windowReference, value);
                     }
                     else
                     {
@@ -61,34 +43,17 @@ namespace InputDevices
             }
         }
 
-        readonly uint IEntity.Value => device.GetEntityValue();
-        readonly World IEntity.World => device.GetWorld();
-
         readonly void IEntity.Describe(ref Archetype archetype)
         {
+            archetype.Add<InputDevice>();
             archetype.AddComponentType<IsMouse>();
             archetype.AddComponentType<LastMouseState>();
-            archetype.Add<InputDevice>();
         }
-
-#if NET
-        [Obsolete("Default constructor not available", true)]
-        public Mouse()
-        {
-            throw new NotSupportedException("Default constructor not available");
-        }
-#endif
 
         public Mouse(World world)
         {
-            device = new(world);
-            device.AddComponent(new IsMouse());
-            device.AddComponent(new LastMouseState());
-        }
-
-        public readonly void Dispose()
-        {
-            device.Dispose();
+            this.world = world;
+            value = world.CreateEntity(new IsMouse(), new LastMouseState(), new LastDeviceUpdateTime());
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
@@ -126,12 +91,7 @@ namespace InputDevices
 
         public static implicit operator InputDevice(Mouse mouse)
         {
-            return mouse.device;
-        }
-
-        public static implicit operator Entity(Mouse mouse)
-        {
-            return mouse.device.AsEntity();
+            return mouse.As<InputDevice>();
         }
 
         public enum Button : byte

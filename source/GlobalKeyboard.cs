@@ -5,48 +5,31 @@ using Worlds;
 
 namespace InputDevices
 {
-    public readonly struct GlobalKeyboard : IKeyboard
+    public readonly partial struct GlobalKeyboard : IKeyboard
     {
-        private readonly Keyboard keyboard;
-
-        readonly World IEntity.World => keyboard.GetWorld();
-        readonly uint IEntity.Value => keyboard.GetEntityValue();
-
-        readonly void IEntity.Describe(ref Archetype archetype)
-        {
-            archetype.AddTagType<IsGlobal>();
-            archetype.Add<Keyboard>();
-        }
-
-#if NET
-        [Obsolete("Default constructor not available", true)]
-        public GlobalKeyboard()
-        {
-            throw new InvalidOperationException("Cannot create a global keyboard without a world");
-        }
-#endif
-
         public GlobalKeyboard(World world)
         {
             ThrowIfInstanceAlreadyExists(world);
 
-            keyboard = new(world);
-            keyboard.AsEntity().AddTag<IsGlobal>();
+            this.world = world;
+            value = world.CreateEntity(new IsKeyboard(default, default), new LastKeyboardState(), new LastDeviceUpdateTime());
+            AddTag<IsGlobal>();
         }
 
-        public readonly void Dispose()
+        readonly void IEntity.Describe(ref Archetype archetype)
         {
-            keyboard.Dispose();
+            archetype.Add<Keyboard>();
+            archetype.AddTagType<IsGlobal>();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            return keyboard.GetButtonState(control);
+            return As<Keyboard>().GetButtonState(control);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            keyboard.SetButtonState(control, state);
+            As<Keyboard>().SetButtonState(control, state);
         }
 
         [Conditional("DEBUG")]
@@ -60,17 +43,12 @@ namespace InputDevices
 
         public static implicit operator Keyboard(GlobalKeyboard globalKeyboard)
         {
-            return globalKeyboard.keyboard;
+            return globalKeyboard.As<Keyboard>();
         }
 
         public static implicit operator InputDevice(GlobalKeyboard globalKeyboard)
         {
-            return globalKeyboard.keyboard;
-        }
-
-        public static implicit operator Entity(GlobalKeyboard globalKeyboard)
-        {
-            return globalKeyboard.keyboard;
+            return globalKeyboard.As<InputDevice>();
         }
     }
 }

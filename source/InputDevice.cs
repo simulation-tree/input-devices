@@ -4,45 +4,24 @@ using Worlds;
 
 namespace InputDevices
 {
-    public readonly struct InputDevice : IEntity
+    public readonly partial struct InputDevice : IEntity
     {
-        private readonly Entity entity;
+        public readonly TimeSpan LastUpdateTime => GetComponent<LastDeviceUpdateTime>().value;
 
-        readonly World IEntity.World => entity.GetWorld();
-        readonly uint IEntity.Value => entity.GetEntityValue();
+        public InputDevice(World world)
+        {
+            this.world = world;
+            value = world.CreateEntity(new LastDeviceUpdateTime());
+        }
 
         readonly void IEntity.Describe(ref Archetype archetype)
         {
             archetype.AddComponentType<LastDeviceUpdateTime>();
         }
 
-#if NET
-        [Obsolete("Default constructor not available", true)]
-        public InputDevice()
-        {
-            throw new InvalidOperationException("Cannot create an input device without a world.");
-        }
-#endif
-
-        public InputDevice(World world, uint existingEntity)
-        {
-            entity = new(world, existingEntity);
-        }
-
-        public InputDevice(World world)
-        {
-            entity = new(world);
-            entity.AddComponent(new LastDeviceUpdateTime());
-        }
-
-        public readonly void Dispose()
-        {
-            entity.Dispose();
-        }
-
         public readonly void SetUpdateTime(TimeSpan timestamp)
         {
-            ref LastDeviceUpdateTime state = ref entity.GetComponent<LastDeviceUpdateTime>();
+            ref LastDeviceUpdateTime state = ref GetComponent<LastDeviceUpdateTime>();
             state.value = timestamp;
         }
     }

@@ -6,38 +6,10 @@ using Worlds;
 
 namespace InputDevices
 {
-    public readonly struct GlobalMouse : IMouse
+    public readonly partial struct GlobalMouse : IMouse
     {
-        private readonly Mouse mouse;
-
-        public readonly Vector2 Position
-        {
-            get => mouse.Position;
-            set => mouse.Position = value;
-        }
-
-        public readonly Vector2 Scroll
-        {
-            get => mouse.Scroll;
-            set => mouse.Scroll = value;
-        }
-
-        readonly uint IEntity.Value => mouse.GetEntityValue();
-        readonly World IEntity.World => mouse.GetWorld();
-
-        readonly void IEntity.Describe(ref Archetype archetype)
-        {
-            archetype.AddTagType<IsGlobal>();
-            archetype.Add<Mouse>();
-        }
-
-#if NET
-        [Obsolete("Default constructor not available", true)]
-        public GlobalMouse()
-        {
-            throw new InvalidOperationException("Cannot create a global mouse without a world");
-        }
-#endif
+        public readonly ref Vector2 Position => ref As<Mouse>().Position;
+        public readonly ref Vector2 Scroll => ref As<Mouse>().Scroll;
 
         /// <summary>
         /// Creates a global mouse device that receives data regardless
@@ -47,23 +19,25 @@ namespace InputDevices
         {
             ThrowIfInstanceAlreadyExists(world);
 
-            mouse = new Mouse(world);
-            mouse.AsEntity().AddTag<IsGlobal>();
+            this.world = world;
+            value = world.CreateEntity(new IsMouse(default, default), new LastMouseState(), new LastDeviceUpdateTime());
+            AddTag<IsGlobal>();
         }
 
-        public readonly void Dispose()
+        readonly void IEntity.Describe(ref Archetype archetype)
         {
-            mouse.Dispose();
+            archetype.AddTagType<IsGlobal>();
+            archetype.Add<Mouse>();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            return mouse.GetButtonState(control);
+            return As<Mouse>().GetButtonState(control);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            mouse.SetButtonState(control, state);
+            As<Mouse>().SetButtonState(control, state);
         }
 
         [Conditional("DEBUG")]
@@ -77,17 +51,12 @@ namespace InputDevices
 
         public static implicit operator Mouse(GlobalMouse globalMouse)
         {
-            return globalMouse.mouse;
+            return globalMouse.As<Mouse>();
         }
 
         public static implicit operator InputDevice(GlobalMouse globalMouse)
         {
-            return globalMouse.mouse;
-        }
-
-        public static implicit operator Entity(GlobalMouse globalMouse)
-        {
-            return globalMouse.mouse;
+            return globalMouse.As<InputDevice>();
         }
     }
 }

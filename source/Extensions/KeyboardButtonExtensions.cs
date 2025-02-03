@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 namespace InputDevices
 {
-    public static class KeyboardExtensions
+    public static class KeyboardButtonExtensions
     {
         private static readonly char[] controlsCharacters;
 
-        static KeyboardExtensions()
+        static KeyboardButtonExtensions()
         {
             controlsCharacters = new char[KeyboardState.MaxKeyCount];
             controlsCharacters[(int)Keyboard.Button.A] = 'a';
@@ -75,6 +75,7 @@ namespace InputDevices
         public static char GetCharacter(this Keyboard.Button button)
         {
             ThrowIfKeyboardButtonIsUnknown(button);
+
             return controlsCharacters[(int)button];
         }
 

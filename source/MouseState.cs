@@ -7,6 +7,7 @@ namespace InputDevices
         public const uint MaxButtonCount = 5;
 
         public Vector2 position;
+        public Vector2 delta;
         public Vector2 scroll;
         public byte buttons;
         public Mouse.Cursor cursor;
@@ -31,13 +32,6 @@ namespace InputDevices
                     buttons &= (byte)~(1 << (int)index);
                 }
             }
-        }
-
-        public MouseState(Vector2 position, Vector2 scroll, byte buttons = default)
-        {
-            this.position = position;
-            this.scroll = scroll;
-            this.buttons = buttons;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace InputDevices
     public readonly partial struct Mouse : IMouse
     {
         public readonly ref Vector2 Position => ref GetComponent<IsMouse>().state.position;
+        public readonly ref Vector2 Delta => ref GetComponent<IsMouse>().state.delta;
         public readonly ref Vector2 Scroll => ref GetComponent<IsMouse>().state.scroll;
         public readonly ref MouseState State => ref GetComponent<IsMouse>().state;
         public readonly ref MouseState LastState => ref GetComponent<LastMouseState>().value;

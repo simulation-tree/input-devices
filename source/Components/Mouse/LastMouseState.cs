@@ -1,8 +1,5 @@
-﻿using Worlds;
-
-namespace InputDevices.Components
+﻿namespace InputDevices.Components
 {
-    [Component]
     public struct LastMouseState
     {
         public MouseState value;

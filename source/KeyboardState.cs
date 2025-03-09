@@ -9,7 +9,7 @@ namespace InputDevices
 
         private fixed ulong keys[5];
 
-        public bool this[uint index]
+        public bool this[int index]
         {
             get => IsKeyDown(index);
             set => SetKeyDown(index, value);
@@ -29,21 +29,23 @@ namespace InputDevices
             }
         }
 
-        public readonly bool IsKeyDown(uint index)
+        public readonly bool IsKeyDown(int index)
         {
             ThrowIfOutOfRange(index);
-            uint arrayIndex = index / 64;
-            uint bitIndex = index % 64;
-            ulong mask = 1UL << (int)bitIndex;
+
+            int arrayIndex = index / 64;
+            int bitIndex = index % 64;
+            ulong mask = 1UL << bitIndex;
             return (keys[arrayIndex] & mask) != 0;
         }
 
-        public void SetKeyDown(uint index, bool value)
+        public void SetKeyDown(int index, bool value)
         {
             ThrowIfOutOfRange(index);
-            uint arrayIndex = index / 64;
-            uint bitIndex = index % 64;
-            ulong mask = 1UL << (int)bitIndex;
+
+            int arrayIndex = index / 64;
+            int bitIndex = index % 64;
+            ulong mask = 1UL << bitIndex;
             if (value)
             {
                 keys[arrayIndex] |= mask;
@@ -55,7 +57,7 @@ namespace InputDevices
         }
 
         [Conditional("DEBUG")]
-        private static void ThrowIfOutOfRange(uint index)
+        private static void ThrowIfOutOfRange(int index)
         {
             if (index >= MaxKeyCount)
             {

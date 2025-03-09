@@ -1,5 +1,4 @@
 ﻿using System;
-using Unmanaged;
 
 namespace InputDevices
 {
@@ -40,60 +39,60 @@ namespace InputDevices
 
         public unsafe readonly override string ToString()
         {
-            USpan<char> buffer = stackalloc char[16];
-            uint length = ToString(buffer);
-            return buffer.GetSpan(length).ToString();
+            Span<char> buffer = stackalloc char[16];
+            int length = ToString(buffer);
+            return buffer.Slice(0, length).ToString();
         }
 
-        public readonly uint ToString(USpan<char> buffer)
+        public readonly int ToString(Span<char> destination)
         {
             if (value == State.Released)
             {
-                buffer[0] = 'R';
-                buffer[1] = 'e';
-                buffer[2] = 'l';
-                buffer[3] = 'e';
-                buffer[4] = 'a';
-                buffer[5] = 's';
-                buffer[6] = 'e';
-                buffer[7] = 'd';
+                destination[0] = 'R';
+                destination[1] = 'e';
+                destination[2] = 'l';
+                destination[3] = 'e';
+                destination[4] = 'a';
+                destination[5] = 's';
+                destination[6] = 'e';
+                destination[7] = 'd';
                 return 8;
             }
             else if (value == State.WasPressed)
             {
-                buffer[0] = 'W';
-                buffer[1] = 'a';
-                buffer[2] = 's';
-                buffer[3] = 'P';
-                buffer[4] = 'r';
-                buffer[5] = 'e';
-                buffer[6] = 's';
-                buffer[7] = 's';
-                buffer[8] = 'e';
-                buffer[9] = 'd';
+                destination[0] = 'W';
+                destination[1] = 'a';
+                destination[2] = 's';
+                destination[3] = 'P';
+                destination[4] = 'r';
+                destination[5] = 'e';
+                destination[6] = 's';
+                destination[7] = 's';
+                destination[8] = 'e';
+                destination[9] = 'd';
                 return 10;
             }
             else if (value == State.Held)
             {
-                buffer[0] = 'H';
-                buffer[1] = 'e';
-                buffer[2] = 'l';
-                buffer[3] = 'd';
+                destination[0] = 'H';
+                destination[1] = 'e';
+                destination[2] = 'l';
+                destination[3] = 'd';
                 return 4;
             }
             else
             {
-                buffer[0] = 'W';
-                buffer[1] = 'a';
-                buffer[2] = 's';
-                buffer[3] = 'R';
-                buffer[4] = 'e';
-                buffer[5] = 'l';
-                buffer[6] = 'e';
-                buffer[7] = 'a';
-                buffer[8] = 's';
-                buffer[9] = 'e';
-                buffer[10] = 'd';
+                destination[0] = 'W';
+                destination[1] = 'a';
+                destination[2] = 's';
+                destination[3] = 'R';
+                destination[4] = 'e';
+                destination[5] = 'l';
+                destination[6] = 'e';
+                destination[7] = 'a';
+                destination[8] = 's';
+                destination[9] = 'e';
+                destination[10] = 'd';
                 return 11;
             }
         }

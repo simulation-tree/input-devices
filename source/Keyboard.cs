@@ -1,5 +1,5 @@
 ﻿using InputDevices.Components;
-using Unmanaged;
+using System;
 using Worlds;
 
 namespace InputDevices
@@ -57,7 +57,7 @@ namespace InputDevices
         {
             ref KeyboardState state = ref State;
             ref KeyboardState lastState = ref LastState;
-            return new ButtonState(state[control], lastState[control]);
+            return new ButtonState(state[(int)control], lastState[(int)control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
@@ -66,34 +66,34 @@ namespace InputDevices
             ref KeyboardState lastState = ref LastState;
             if (state.value == ButtonState.State.Held)
             {
-                currentState[control] = true;
-                lastState[control] = true;
+                currentState[(int)control] = true;
+                lastState[(int)control] = true;
             }
             else if (state.value == ButtonState.State.WasPressed)
             {
-                currentState[control] = true;
-                lastState[control] = false;
+                currentState[(int)control] = true;
+                lastState[(int)control] = false;
             }
             else if (state.value == ButtonState.State.WasReleased)
             {
-                currentState[control] = false;
-                lastState[control] = true;
+                currentState[(int)control] = false;
+                lastState[(int)control] = true;
             }
             else
             {
-                currentState[control] = false;
-                lastState[control] = false;
+                currentState[(int)control] = false;
+                lastState[(int)control] = false;
             }
         }
 
         /// <summary>
         /// All currently pressed keyboard controls.
         /// </summary>
-        public readonly uint GetPressedControls(USpan<Button> buffer)
+        public readonly int GetPressedControls(Span<Button> buffer)
         {
-            uint count = 0;
+            int count = 0;
             ref KeyboardState state = ref State;
-            for (uint i = 0; i < KeyboardState.MaxKeyCount; i++)
+            for (int i = 0; i < KeyboardState.MaxKeyCount; i++)
             {
                 if (state[i])
                 {

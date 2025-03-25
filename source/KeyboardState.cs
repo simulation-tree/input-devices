@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace InputDevices
 {
-    public unsafe struct KeyboardState
+    public struct KeyboardState
     {
         public const uint MaxKeyCount = 320;
 
-        private fixed ulong keys[5];
+        private Buffer keys;
 
         public bool this[int index]
         {
@@ -20,7 +21,7 @@ namespace InputDevices
             unchecked
             {
                 int hash = 17;
-                for (uint i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     hash = hash * 23 + keys[i].GetHashCode();
                 }
@@ -64,5 +65,24 @@ namespace InputDevices
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
+
+#if NET
+        [InlineArray(5)]
+        private struct Buffer
+        {
+            private ulong element0;
+        }
+#else
+        private unsafe struct Buffer
+        {
+            private fixed ulong buffer[5];
+
+            public ulong this[int index]
+            {
+                get => buffer[index];
+                set => buffer[index] = value;
+            }
+        }
+#endif
     }
 }

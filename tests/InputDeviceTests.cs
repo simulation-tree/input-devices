@@ -8,7 +8,7 @@ namespace InputDevices.Tests
     {
         static InputDeviceTests()
         {
-            MetadataRegistry.Load<InputDevicesTypeBank>();
+            MetadataRegistry.Load<InputDevicesMetadataBank>();
         }
 
         protected override Schema CreateSchema()

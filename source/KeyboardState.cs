@@ -34,8 +34,8 @@ namespace InputDevices
         {
             ThrowIfOutOfRange(index);
 
-            int arrayIndex = index / 64;
-            int bitIndex = index % 64;
+            int arrayIndex = index >> 6;
+            int bitIndex = index & 63;
             ulong mask = 1UL << bitIndex;
             return (keys[arrayIndex] & mask) != 0;
         }
@@ -44,8 +44,8 @@ namespace InputDevices
         {
             ThrowIfOutOfRange(index);
 
-            int arrayIndex = index / 64;
-            int bitIndex = index % 64;
+            int arrayIndex = index >> 6;
+            int bitIndex = index & 63;
             ulong mask = 1UL << bitIndex;
             if (value)
             {

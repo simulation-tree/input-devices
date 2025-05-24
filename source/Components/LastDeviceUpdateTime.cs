@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace InputDevices.Components
+﻿namespace InputDevices.Components
 {
     public struct LastDeviceUpdateTime
     {
-        public TimeSpan value;
+        public double time;
 
-        public LastDeviceUpdateTime(TimeSpan value)
+        public LastDeviceUpdateTime(double time)
         {
-            this.value = value;
+            this.time = time;
         }
     }
 }

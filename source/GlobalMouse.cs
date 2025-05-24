@@ -20,7 +20,7 @@ namespace InputDevices
             ThrowIfInstanceAlreadyExists(world);
 
             this.world = world;
-            value = world.CreateEntity(new IsMouse(default, default), new LastMouseState(), new LastDeviceUpdateTime());
+            value = world.CreateEntity(new IsMouse(), new LastDeviceUpdateTime());
             AddTag<IsGlobal>();
         }
 

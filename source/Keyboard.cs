@@ -6,8 +6,8 @@ namespace InputDevices
 {
     public readonly partial struct Keyboard : IKeyboard
     {
-        public readonly ref KeyboardState State => ref GetComponent<IsKeyboard>().state;
-        public readonly ref KeyboardState LastState => ref GetComponent<LastKeyboardState>().value;
+        public readonly ref KeyboardState State => ref GetComponent<IsKeyboard>().currentState;
+        public readonly ref KeyboardState LastState => ref GetComponent<IsKeyboard>().lastState;
 
         public readonly Entity Window
         {
@@ -40,49 +40,46 @@ namespace InputDevices
             }
         }
 
-        public Keyboard(World world)
+        public Keyboard(World world, rint windowReference = default)
         {
             this.world = world;
-            value = world.CreateEntity(new IsKeyboard(default, default), new LastKeyboardState(), new LastDeviceUpdateTime());
+            value = world.CreateEntity(new IsKeyboard(windowReference), new LastDeviceUpdateTime());
         }
 
         readonly void IEntity.Describe(ref Archetype archetype)
         {
             archetype.Add<InputDevice>();
             archetype.AddComponentType<IsKeyboard>();
-            archetype.AddComponentType<LastKeyboardState>();
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            ref KeyboardState state = ref State;
-            ref KeyboardState lastState = ref LastState;
-            return new ButtonState(state[(int)control], lastState[(int)control]);
+            ref IsKeyboard keyboard = ref GetComponent<IsKeyboard>();
+            return new ButtonState(keyboard.currentState[(int)control], keyboard.lastState[(int)control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            ref KeyboardState currentState = ref State;
-            ref KeyboardState lastState = ref LastState;
+            ref IsKeyboard keyboard = ref GetComponent<IsKeyboard>();
             if (state.value == ButtonState.State.Held)
             {
-                currentState[(int)control] = true;
-                lastState[(int)control] = true;
+                keyboard.currentState[(int)control] = true;
+                keyboard.lastState[(int)control] = true;
             }
             else if (state.value == ButtonState.State.WasPressed)
             {
-                currentState[(int)control] = true;
-                lastState[(int)control] = false;
+                keyboard.currentState[(int)control] = true;
+                keyboard.lastState[(int)control] = false;
             }
             else if (state.value == ButtonState.State.WasReleased)
             {
-                currentState[(int)control] = false;
-                lastState[(int)control] = true;
+                keyboard.currentState[(int)control] = false;
+                keyboard.lastState[(int)control] = true;
             }
             else
             {
-                currentState[(int)control] = false;
-                lastState[(int)control] = false;
+                keyboard.currentState[(int)control] = false;
+                keyboard.lastState[(int)control] = false;
             }
         }
 

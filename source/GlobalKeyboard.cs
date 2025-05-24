@@ -12,7 +12,7 @@ namespace InputDevices
             ThrowIfInstanceAlreadyExists(world);
 
             this.world = world;
-            value = world.CreateEntity(new IsKeyboard(default, default), new LastKeyboardState(), new LastDeviceUpdateTime());
+            value = world.CreateEntity(new IsKeyboard(), new LastDeviceUpdateTime());
             AddTag<IsGlobal>();
         }
 

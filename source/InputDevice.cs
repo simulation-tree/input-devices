@@ -1,12 +1,11 @@
 ﻿using InputDevices.Components;
-using System;
 using Worlds;
 
 namespace InputDevices
 {
     public readonly partial struct InputDevice : IEntity
     {
-        public readonly TimeSpan LastUpdateTime => GetComponent<LastDeviceUpdateTime>().value;
+        public readonly double LastUpdateTime => GetComponent<LastDeviceUpdateTime>().time;
 
         public InputDevice(World world)
         {
@@ -19,10 +18,10 @@ namespace InputDevices
             archetype.AddComponentType<LastDeviceUpdateTime>();
         }
 
-        public readonly void SetUpdateTime(TimeSpan timestamp)
+        public readonly void SetUpdateTime(double timestamp)
         {
             ref LastDeviceUpdateTime state = ref GetComponent<LastDeviceUpdateTime>();
-            state.value = timestamp;
+            state.time = timestamp;
         }
     }
 }

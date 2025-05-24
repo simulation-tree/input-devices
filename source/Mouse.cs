@@ -6,11 +6,11 @@ namespace InputDevices
 {
     public readonly partial struct Mouse : IMouse
     {
-        public readonly ref Vector2 Position => ref GetComponent<IsMouse>().state.position;
-        public readonly ref Vector2 Delta => ref GetComponent<IsMouse>().state.delta;
-        public readonly ref Vector2 Scroll => ref GetComponent<IsMouse>().state.scroll;
-        public readonly ref MouseState State => ref GetComponent<IsMouse>().state;
-        public readonly ref MouseState LastState => ref GetComponent<LastMouseState>().value;
+        public readonly ref Vector2 Position => ref GetComponent<IsMouse>().currentState.position;
+        public readonly ref Vector2 Delta => ref GetComponent<IsMouse>().currentState.delta;
+        public readonly ref Vector2 Scroll => ref GetComponent<IsMouse>().currentState.scroll;
+        public readonly ref MouseState State => ref GetComponent<IsMouse>().currentState;
+        public readonly ref MouseState LastState => ref GetComponent<IsMouse>().lastState;
 
         public readonly Entity Window
         {
@@ -47,45 +47,42 @@ namespace InputDevices
         {
             archetype.Add<InputDevice>();
             archetype.AddComponentType<IsMouse>();
-            archetype.AddComponentType<LastMouseState>();
         }
 
-        public Mouse(World world)
+        public Mouse(World world, rint windowReference = default)
         {
             this.world = world;
-            value = world.CreateEntity(new IsMouse(), new LastMouseState(), new LastDeviceUpdateTime());
+            value = world.CreateEntity(new IsMouse(windowReference), new LastDeviceUpdateTime());
         }
 
         readonly ButtonState IInputDevice.GetButtonState(uint control)
         {
-            ref MouseState state = ref State;
-            ref MouseState lastState = ref LastState;
-            return new ButtonState(state[control], lastState[control]);
+            ref IsMouse component = ref GetComponent<IsMouse>();
+            return new ButtonState(component.currentState[control], component.lastState[control]);
         }
 
         readonly void IInputDevice.SetButtonState(uint control, ButtonState state)
         {
-            ref MouseState currentState = ref State;
-            ref MouseState lastState = ref LastState;
+            ref IsMouse component = ref GetComponent<IsMouse>();
             if (state.value == ButtonState.State.Held)
             {
-                currentState[control] = true;
-                lastState[control] = true;
+                component.currentState[control] = true;
+                component.lastState[control] = true;
             }
             else if (state.value == ButtonState.State.WasPressed)
             {
-                currentState[control] = true;
-                lastState[control] = false;
+                component.currentState[control] = true;
+                component.lastState[control] = false;
             }
             else if (state.value == ButtonState.State.WasReleased)
             {
-                currentState[control] = false;
-                lastState[control] = true;
+                component.currentState[control] = false;
+                component.lastState[control] = true;
             }
             else
             {
-                currentState[control] = false;
-                lastState[control] = false;
+                component.currentState[control] = false;
+                component.lastState[control] = false;
             }
         }
 

@@ -30,9 +30,9 @@
 
   <ItemGroup>
     <Content Include="bin/Debug/net9.0/InputDevices.dll" Pack="true" PackagePath="tools/debug/InputDevices.dll" Visible="false"/>
-    <Content Include="bin/Debug/net9.0/InputDevices.xml" Pack="true" PackagePath="tools/debug/InputDevices.xml" Visible="false"/>
+    <Content Include="bin/Debug/net9.0/InputDevices.xml" Pack="true" PackagePath="tools/debug/InputDevices.xml" Visible="false" Condition="Exists('bin/Debug/net9.0/InputDevices.xml')"/>
     <Content Include="bin/Release/net9.0/InputDevices.dll" Pack="true" PackagePath="tools/release/InputDevices.dll" Visible="false"/>
-    <Content Include="bin/Release/net9.0/InputDevices.xml" Pack="true" PackagePath="tools/release/InputDevices.xml" Visible="false"/>
+    <Content Include="bin/Release/net9.0/InputDevices.xml" Pack="true" PackagePath="tools/release/InputDevices.xml" Visible="false" Condition="Exists('bin/Release/net9.0/InputDevices.xml')"/>
     <Content Include="build/InputDevices.targets" Pack="true" PackagePath="build/InputDevices.targets" Visible="false"/>
   </ItemGroup>
 

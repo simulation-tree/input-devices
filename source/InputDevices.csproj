@@ -13,7 +13,7 @@
     <Company>simulation-tree</Company>
     <RepositoryUrl>https://github.com/simulation-tree/input-devices</RepositoryUrl>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <OutDir>bin/$(TargetFramework)/$(Configuration)</OutDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,11 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bin/Debug/net9.0/InputDevices.dll" Pack="true" PackagePath="tools/debug/InputDevices.dll" Visible="false"/>
-    <Content Include="bin/Debug/net9.0/InputDevices.xml" Pack="true" PackagePath="tools/debug/InputDevices.xml" Visible="false" Condition="Exists('bin/Debug/net9.0/InputDevices.xml')"/>
-    <Content Include="bin/Release/net9.0/InputDevices.dll" Pack="true" PackagePath="tools/release/InputDevices.dll" Visible="false"/>
-    <Content Include="bin/Release/net9.0/InputDevices.xml" Pack="true" PackagePath="tools/release/InputDevices.xml" Visible="false" Condition="Exists('bin/Release/net9.0/InputDevices.xml')"/>
-    <Content Include="build/InputDevices.targets" Pack="true" PackagePath="build/InputDevices.targets" Visible="false"/>
+    <Content Include="bin/**/*" Pack="true" PackagePath="lib" Visible="false"/>
+    <Content Include="buildTransitive/**/*" Pack="true" PackagePath="buildTransitive"/>
   </ItemGroup>
 
 </Project>

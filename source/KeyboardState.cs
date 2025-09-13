@@ -18,16 +18,13 @@ namespace InputDevices
 
         public override int GetHashCode()
         {
-            unchecked
+            int hash = 17;
+            for (int i = 0; i < 5; i++)
             {
-                int hash = 17;
-                for (int i = 0; i < 5; i++)
-                {
-                    hash = hash * 23 + keys[i].GetHashCode();
-                }
-
-                return hash;
+                hash = hash * 23 + keys[i].GetHashCode();
             }
+
+            return hash;
         }
 
         public readonly bool IsKeyDown(int index)

@@ -109,7 +109,7 @@ namespace InputDevices
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(value);
+            return value.GetHashCode();
         }
 
         public enum State : byte

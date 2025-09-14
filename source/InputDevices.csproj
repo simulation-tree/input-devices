@@ -14,6 +14,7 @@
     <RepositoryUrl>https://github.com/simulation-tree/input-devices</RepositoryUrl>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <OutDir>bin/$(TargetFramework)/$(Configuration)</OutDir>
+    <PackageId>SimulationTree.InputDevices</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
